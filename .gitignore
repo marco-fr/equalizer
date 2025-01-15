@@ -1,0 +1,4 @@
+obj_dir/
+env/
+*.txt
+*.wav
