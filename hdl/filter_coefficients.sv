@@ -1,13 +1,11 @@
 module filter_coefficients(
-    output logic [15:0] low_pass[0:100],
-    output logic [15:0] mid_pass[0:100],
-    output logic [15:0] high_pass[0:100]
+    output logic [15:0] coeff[0:2][0:100]
 );
 
 parameter FILTER_SIZE = 100;
 parameter AUDIO_DEPTH = 16;
 
-localparam signed [AUDIO_DEPTH - 1:0] COEFF_LOW[0:FILTER_SIZE] = '{15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, -15'd1, 
+localparam signed [AUDIO_DEPTH - 1:0] COEFF[0:2][0:FILTER_SIZE] = '{'{15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, -15'd1, 
 15'd0, 15'd1, 15'd1, 15'd0, -15'd1, -15'd1, 15'd0, 15'd1, 15'd2, 15'd0, 
 -15'd2, -15'd3, -15'd1, 15'd2, 15'd3, 15'd1, -15'd2, -15'd5, -15'd2, 15'd3, 
 15'd6, 15'd3, -15'd3, -15'd7, -15'd5, 15'd3, 15'd10, 15'd7, -15'd3, -15'd13, 
@@ -18,9 +16,7 @@ localparam signed [AUDIO_DEPTH - 1:0] COEFF_LOW[0:FILTER_SIZE] = '{15'd0, 15'd0,
 -15'd2, 15'd0, 15'd2, 15'd1, 15'd0, -15'd1, -15'd1, 15'd0, 15'd1, 15'd1, 
 15'd0, -15'd1, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 
 15'd0
-};
-
-localparam signed [AUDIO_DEPTH - 1:0] COEFF_MID[0:FILTER_SIZE] = '{15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, -15'd1, 15'd0, 15'd1, 15'd0, 
+}, '{15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, -15'd1, 15'd0, 15'd1, 15'd0, 
 15'd0, 15'd0, -15'd2, 15'd0, 15'd3, 15'd1, -15'd1, 15'd0, -15'd2, -15'd3, 
 15'd4, 15'd4, -15'd2, -15'd1, -15'd1, -15'd5, 15'd2, 15'd9, -15'd1, -15'd5, 
 15'd0, -15'd6, -15'd1, 15'd15, 15'd5, -15'd12, -15'd2, -15'd2, -15'd8, 15'd18, 
@@ -31,9 +27,7 @@ localparam signed [AUDIO_DEPTH - 1:0] COEFF_MID[0:FILTER_SIZE] = '{15'd0, 15'd0,
 15'd4, -15'd3, -15'd2, 15'd0, -15'd1, 15'd1, 15'd3, 15'd0, -15'd2, 15'd0, 
 15'd0, 15'd0, 15'd1, 15'd0, -15'd1, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 
 15'd0
-};
-
-localparam signed [AUDIO_DEPTH - 1:0] COEFF_HIGH[0:FILTER_SIZE] = '{15'd0, -15'd1, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd1, 
+},'{15'd0, -15'd1, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd1, 
 15'd0, -15'd1, 15'd1, 15'd0, -15'd1, 15'd0, 15'd1, -15'd2, 15'd0, 15'd2, 
 -15'd2, -15'd1, 15'd3, -15'd1, -15'd2, 15'd4, 15'd0, -15'd4, 15'd3, 15'd2, 
 -15'd6, 15'd2, 15'd5, -15'd7, 15'd0, 15'd8, -15'd7, -15'd4, 15'd12, -15'd5, 
@@ -44,10 +38,8 @@ localparam signed [AUDIO_DEPTH - 1:0] COEFF_HIGH[0:FILTER_SIZE] = '{15'd0, -15'd
 -15'd2, 15'd2, 15'd0, -15'd2, 15'd1, 15'd0, -15'd1, 15'd0, 15'd1, -15'd1, 
 15'd0, 15'd1, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, 15'd0, -15'd1, 
 15'd0
-};
+}};
 
-assign low_pass = COEFF_LOW;
-assign mid_pass = COEFF_MID;
-assign high_pass = COEFF_HIGH;
+assign coeff = COEFF;
 
 endmodule

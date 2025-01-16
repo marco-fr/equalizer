@@ -9,24 +9,16 @@ module filter_bank (
     parameter FILTER_SIZE = 100;
     parameter AUDIO_DEPTH = 16;
     parameter FILTER_PRECISION = 512;
+    parameter BAND_NUMBER = 3;
 
-    logic signed [AUDIO_DEPTH - 1:0] COEFF_LOW[0:FILTER_SIZE];
-    logic signed [AUDIO_DEPTH - 1:0] COEFF_MID[0:FILTER_SIZE];
-    logic signed [AUDIO_DEPTH - 1:0] COEFF_HIGH[0:FILTER_SIZE];
+    logic signed [AUDIO_DEPTH - 1:0] COEFF[0:2][0:FILTER_SIZE];
 
     filter_coefficients filters(
-        .low_pass(COEFF_LOW),
-        .mid_pass(COEFF_MID),
-        .high_pass(COEFF_HIGH)
+        .coeff(COEFF)
     );
 
     logic signed [AUDIO_DEPTH - 1:0] delay_line[0:FILTER_SIZE];
-
-    logic signed [AUDIO_DEPTH - 1: 0] low;
-    logic signed [AUDIO_DEPTH - 1: 0] mid;
-    logic signed [AUDIO_DEPTH - 1: 0] high;
-
-    integer i;
+    logic signed [AUDIO_DEPTH - 1: 0] out_band[0:2];
 
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
@@ -37,18 +29,16 @@ module filter_bank (
     end
     
     always_comb begin
-        low = 0;
-        mid = 0;
-        high = 0;
-        for (int i = 0; i < FILTER_SIZE + 1; i++) begin
-            low += (COEFF_LOW[FILTER_SIZE - i] * delay_line[i])/FILTER_PRECISION;
-            mid += (COEFF_MID[FILTER_SIZE - i] * delay_line[i])/FILTER_PRECISION;
-            high += (COEFF_HIGH[FILTER_SIZE - i] * delay_line[i])/FILTER_PRECISION;
+        for(int j = 0; j < BAND_NUMBER; j++) begin
+            out_band[j] = 0;
+            for (int i = 0; i < FILTER_SIZE + 1; i++) begin
+                out_band[j] += (COEFF[j][FILTER_SIZE - i] * delay_line[i])/FILTER_PRECISION;
+            end
         end
     end
 
-    assign low_band = low;
-    assign mid_band = mid;
-    assign high_band = high;
+    assign low_band = out_band[0];
+    assign mid_band = out_band[1];
+    assign high_band = out_band[2];
 
 endmodule

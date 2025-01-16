@@ -12,7 +12,6 @@ VERILATOR_FLAGS = \
     --trace \
     -Wall \
     -Wno-lint \
-	--timing \
     --build
 
 OUTPUT_EXE = $(BUILD_DIR)/Vaudio_equalizer
